@@ -4,7 +4,13 @@
 
 ## WENDY SUN (wentings) 
 - Demo: https://wentings.github.io/hw05-road-generation/
-- ![](road.png)
+![](road.png)
+
+road on land vs. water
+
+![](road1.png)
+
+road on population density
 
 ## References
 - [Procedural Modeling of Cities](proceduralCityGeneration.pdf)
