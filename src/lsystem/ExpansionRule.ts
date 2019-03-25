@@ -8,18 +8,14 @@ export default class ExpansionRule {
   expand(rand : number, currentChar : string) : string {
     // Get a random number
     // let rand = Math.random();
-    if (currentChar == "F") {
-      if (rand < 0.15) {
-        return "F[+F-FX][-FX]F";
-      } else if (rand < 0.30) {
-        return "F[+F-F+F]F";
-      } else if (rand < 0.40) {
-        return "F[-F+FX]F";
-      } else if (rand < 0.60) {
-        return "F[-F+FF-FX]F";
-      } else if (rand < 0.80) {
-        return "F[-F+FF-F+F]F";
-      }
-    }
+   if (currentChar == "F"){
+     if (rand < 0.80) {
+          // should keep moving forward
+          return "FFFFFF";
+        } else {
+          // should rotate some way and keep going this way
+          return "F[+FFF";
+        }
+   }
   }
 }

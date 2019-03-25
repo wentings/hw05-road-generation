@@ -1,12 +1,14 @@
-import {vec3} from 'gl-matrix';
+import {vec3, mat4, quat} from 'gl-matrix';
 import * as Stats from 'stats-js';
 import * as DAT from 'dat-gui';
 import Square from './geometry/Square';
 import ScreenQuad from './geometry/ScreenQuad';
 import OpenGLRenderer from './rendering/gl/OpenGLRenderer';
 import Camera from './Camera';
+import LSystem from './lsystem/LSystem'
 import {setGL} from './globals';
 import ShaderProgram, {Shader} from './rendering/gl/ShaderProgram';
+import Mesh from './geometry/Mesh';
 
 // Define an object with application parameters and button callbacks
 // This will be referred to by dat.GUI's functions that add GUI elements.
@@ -16,7 +18,11 @@ const controls = {
   'Show land vs. water': false,
 };
 
+const texWidth = window.innerWidth;
+const texHeight = window.innerHeight;
+
 let square: Square;
+let square1: Square;
 let screenQuad: ScreenQuad;
 let background: ScreenQuad;
 let time: number = 0.0;
@@ -29,28 +35,20 @@ function loadScene() {
   screenQuad.create();
   background.create();
 
-  // Set up instanced rendering data arrays here.
-  // This example creates a set of positional
-  // offsets and gradiated colors for a 100x100 grid
-  // of squares, even though the VBO data for just
-  // one square is actually passed to the GPU
-  let offsetsArray = [];
+ // this sets up the map
+   let offsetsArray = [];
    let colorsArray = [];
    let col1Array = [];
    let col2Array = [];
    let col3Array = [];
    let col4Array = [];
 
-  //  var lsys = new LSystem();
-  // var x = lsys.expandGrammar(iterations, lsys.grammar);
-  // let transformations: mat4[] = lsys.transformHistory;
-
   let n: number = 1.0;
   for(let i = 0; i < n; i++) {
     for(let j = 0; j < n; j++) {
 
-      let currTransform = [10.0, 0.0, 0.0, 0.0,
-                            0.0, 10.0, 0.0, 0.0,
+      let currTransform = [25.0, 0.0, 0.0, 0.0,
+                            0.0, 20.0, 0.0, 0.0,
                           0.0, 0.0, 10.0, 0.0,
                           0.0, 0.0, 0.0, 1.0];
 
@@ -96,7 +94,73 @@ function loadScene() {
     let offset: Float32Array = new Float32Array(offsetsArray);
   square.setInstanceVBOs(offset, colors, col1, col2, col3, col4);
   square.setNumInstances(n * n); // grid of "particles"
+  // ---------------------------------------------------------------
+
+  // this sets up the roads??? how do i get the black to draw
+  square1 = new Square();
+  square1.create();
+
+  // initialize LSystem and a Turtle to draw
+  var lsys = new LSystem("F");
+  var x = lsys.expandGrammar(texWidth, texHeight, lsys.grammar);
+  let transformations: mat4[] = lsys.transformHistory;
+  lsys.drawGrammar(x);
+  let offsetsArray_1 = [];
+  let colorsArray_1 = [];
+  let col1Array_1 = [];
+  let col2Array_1 = [];
+  let col3Array_1 = [];
+  let col4Array_1 = [];
+
+  let m: number = transformations.length;
+
+  for (let i = 0; i < m; i++) {
+    let currTransform_1 = transformations[i];
+
+    // Dummy - todo, get rid of offsets
+    offsetsArray_1.push(0);
+    offsetsArray_1.push(0);
+    offsetsArray_1.push(0);
+
+    // push column vectors back
+    col1Array_1.push(currTransform_1[0]);
+    col1Array_1.push(currTransform_1[1]);
+    col1Array_1.push(currTransform_1[2]);
+    col1Array_1.push(currTransform_1[3]);
+
+    col2Array_1.push(currTransform_1[4]);
+    col2Array_1.push(currTransform_1[5]);
+    col2Array_1.push(currTransform_1[6]);
+    col2Array_1.push(currTransform_1[7]);
+
+    col3Array_1.push(currTransform_1[8]);
+    col3Array_1.push(currTransform_1[9]);
+    col3Array_1.push(currTransform_1[10]);
+    col3Array_1.push(currTransform_1[11]);
+
+    col4Array_1.push(currTransform_1[12]);
+    col4Array_1.push(currTransform_1[13]);
+    col4Array_1.push(currTransform_1[14]);
+    col4Array_1.push(currTransform_1[15]);
+
+    // push colors back
+    colorsArray_1.push(1.0);
+    colorsArray_1.push(0.0);
+    colorsArray_1.push(0.0);
+    colorsArray_1.push(1.0);
+  }
+
+  let col1_1: Float32Array = new Float32Array(col1Array_1);
+  let col2_1: Float32Array = new Float32Array(col2Array_1);
+  let col3_1: Float32Array = new Float32Array(col3Array_1);
+  let col4_1: Float32Array = new Float32Array(col4Array_1);
+  let colors_1: Float32Array = new Float32Array(colorsArray_1);
+  let offset_1: Float32Array = new Float32Array(offsetsArray_1);
+  square1.setInstanceVBOs(offset_1, colors_1, col1_1, col2_1, col3_1, col4_1);
+  square1.setNumInstances(m);
 }
+
+
 
 function main() {
   // Initial display for framerate
@@ -178,12 +242,10 @@ function main() {
     }
 
 
-    //renderer.render(camera, flat, [screenQuad]);
-    //renderer.render(camera, flat, [background]);
     renderer.render(camera, mapShader, [square]);
-    // renderer.render(camera, instancedShader, [
-    //   square,
-    // ]);
+    renderer.render(camera, instancedShader, [
+      square1,
+    ]);
     stats.end();
 
     // Tell the browser to call `tick` again whenever it renders a new frame

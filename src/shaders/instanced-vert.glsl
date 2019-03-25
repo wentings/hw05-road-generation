@@ -21,29 +21,20 @@ out vec4 fs_Col;
 out vec4 fs_Pos;
 out vec4 fs_Nor;
 
+const vec4 lightPos = vec4(10, 10, 3, 1);
+
 void main()
 {
     fs_Col = vs_Col;
     fs_Pos = vs_Pos;
-    fs_Nor = vs_Nor;
 
-    vec3 offset = vs_Translate;
-    mat4 t = mat4(vs_Transform1, vs_Transform2, vs_Transform3, vs_Transform4);
-    // if (vs_Transform1[0] != 20.0) {
-    //     fs_Col = vec4(1.0, 0.0, 0.0, 1.0);
-    // } else {
-    //     fs_Col = vec4(0.0, 1.0, 0.0, 1.0);
-    // }
+    mat4 transformation = mat4(vs_Transform1, vs_Transform2, vs_Transform3,
+      vs_Transform4);
 
-    //offset.z = (sin((u_Time + offset.x) * 3.14159 * 0.1) + cos((u_Time + offset.y) * 3.14159 * 0.1)) * 1.5;
-
-    // Billboard pos: follows the camera
-    vec4 newPos = t * vs_Pos;
+    // vec3 offset = vs_Translate;
+    // offset.z = (sin((u_Time + offset.x) * 3.14159 * 0.1) + cos((u_Time + offset.y) * 3.14159 * 0.1)) * 1.5;
+    //
     // vec3 billboardPos = offset + vs_Pos.x * u_CameraAxes[0] + vs_Pos.y * u_CameraAxes[1];
-    vec3 billboardPos = offset + newPos.x * u_CameraAxes[0] + newPos.y * u_CameraAxes[1];
-
-
-    gl_Position = u_ViewProj * newPos;
-    //gl_Position = u_ViewProj * vs_Pos;
-
+    vec4 transformedPos = transformation * vs_Pos;
+    gl_Position = u_ViewProj * transformedPos;
 }

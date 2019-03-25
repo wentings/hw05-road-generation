@@ -4,9 +4,13 @@ import DrawingRule from './DrawingRule';
 import ExpansionRule from './ExpansionRule';
 
 // TODO: ask about the LSystem structure
+let rand1 : number = Math.random();
+let rand2 : number = Math.random();
+let rand3 : number = Math.random();
 export default class LSystem {
-    turtle: Turtle = new Turtle(vec3.fromValues(0, 0, 0),
-                               vec3.fromValues(0, 1, 0),
+  turtle: Turtle = new Turtle(vec3.fromValues(rand1 * 3, rand2 * 3,
+                                rand3 * 3),
+                               vec3.fromValues(1, 0, 0),
                                quat.fromValues(0, 0, 0, 1)); // Current turtle
     turtleHistory: Turtle[] = []; // Stack of turtle history
     dr: DrawingRule = new DrawingRule(this.turtle); // Map of drawing rules
@@ -63,10 +67,16 @@ export default class LSystem {
     }
 
     // Iterate over each char in the axiom and replace it with its expansion
-    expandGrammar(iterations: number, str: string) : string {
+    expandGrammar(texWidth: number, texHeight:number, str: string) : string {
+        console.log("Text width " + texWidth);
+        console.log("Text height " + texHeight);
         var output = this.grammar;
-        for (let i = 0; i < iterations; i++) {
+        let temp: vec3 = vec3.create();
+        temp = this.turtle.position;
+        for (var i = 0; i < 200; i++) {
           for (var j = 0; j < str.length; j++) {
+            console.log("current x" + temp[0]);
+            console.log("current y" + temp[1]);
             output = output.concat(this.expandGrammarSingle(str.charAt(j)));
           }
         }
@@ -80,10 +90,6 @@ export default class LSystem {
         if (str == "F") {
           let transMat : any = this.turtle.getMatrix();
           this.transformHistory.push(transMat);
-        }
-        if (str == "X") {
-          let transMat2 : any = this.turtle.getLeafMatrix();
-          this.leafHistory.push(transMat2);
         }
         if (str == "[") {
           this.pushState();

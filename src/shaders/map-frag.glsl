@@ -160,9 +160,9 @@ float generateColor(float x, float y) {
 void main()
 {
     //vec3 landCol = vec3(0.2, 0.6, 0.1);
-    vec3 landCol = vec3(128.f, 200.f, 101.f) / 255.0;
+    vec3 landCol = vec3(0, 100.f, 0.f) / 255.0;
     vec3 waterCol = vec3(0.0, 0.0, 0.5);
-    vec3 populationCol = vec3(155.f, 106.f, 196.f) / 255.0;
+    vec3 populationCol = vec3(1.0, 0.0, 0.0);
 
     float height = generateColor(fs_Pos.x, fs_Pos.y) * 3.0;
     float population = max(0.0, generateColor(fs_Pos.x, fs_Pos.y) * 2.0);

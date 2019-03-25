@@ -27,8 +27,6 @@ export default class DrawingRule {
         return this.lsys.rotateLeft();
       } else if (currentChar == "-") {
         return this.lsys.rotateRight();
-      } else if (currentChar == "X") {
-        return this.lsys.moveLeaf();
       }
     }
 }

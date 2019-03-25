@@ -102,6 +102,9 @@ float pNoise(vec2 p, int res) {
 */
 void main()
 {
-    float dist = 1.0 - (length(fs_Pos.xyz) * 2.0);
-    out_Col = vec4(1.0f, 0.0f, 0.0f, 1.0f);
+  // float dist = 1.0 - (length(fs_Pos.xyz) * 2.0);
+// out_Col = vec4(dist) * fs_Col;
+// out_Col = fs_Col;
+vec4 diffuseColor = fs_Col;
+out_Col = vec4(diffuseColor.rgb, diffuseColor.a);
 }
