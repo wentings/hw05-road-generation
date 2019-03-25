@@ -13,8 +13,8 @@
 
 ## 2D Maps
 I generated terrains using an fbm function that calculates the elevation of the land. The two possible views for looking at terrain elevation and simply land vs. water 
-are colored appropriately using the height calculated. I generated the population density map using perlin noise, and I checked if the position is on land. If it's in the water or its height is 
-below 0.35, the population density is automatically set to 0.
+are colored appropriately using the height calculated. The lighter colors represents higher elevation. I generated the population density map using perlin noise, and I checked if the position is on land. If it's in the water or its height is 
+below 0.4, the population density is automatically set to 0. The lighter red color represents higher density. 
   
 ## New Pseudo L-System Classes
 I mostly revised the L-system classes from the past homework. This time, I started the seed in a random position on the plane. The 
